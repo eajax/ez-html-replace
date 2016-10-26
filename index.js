@@ -9,7 +9,13 @@ var log = gutil.log;
 //匹配正则
 var reScript = /<\s*script\s+[^\>\<]*src\s*=\s*["|']([^"'>]+)[^>]*><\s*\/\s*script\s*>/gmi;
 var reCss = /<link(?:.*?)href=[\"\'](.+?)[\"\'][^>]*(\/)*\>(?:<\/link>)*/gmi;
-var sepRe = (process.platform === 'win32' ? /[\/\\]/ : /\/+/);
+var reRoot = /^\s*\/[^\/]/gm;
+var reProtocol = /^\s*(http(s*)|file)\:\/\//gm;
+var reFileName = /(.*\/)*([^.]+\.\w+)/gmi;
+var reDependProtocol = /^\s*\/{2}/gm;
+var sepRe = (
+    process.platform === 'win32' ? /[\/\\]/ : /\/+/
+);
 var cdnUrl = 'http://www.eajax.cn/staict/';
 var module_name = 'ez-html-url-replace';
 
@@ -22,11 +28,11 @@ module.exports = function (options) {
     options.debug = options.debug || false;
     options.dir = options.dir || './dist/';
     options.forcePrefix = options.forcePrefix || '';
-    options.debug && log('runtimer opts:', options);
+    options.debug && log('runtime opts:', options);
 
-    //copy from glob-stram module
+    //copy from glob-stream module
     //get absolute path from the drive
-    function getBasePath(ourGlob, opt) {
+    function getBasePath (ourGlob, opt) {
         var basePath;
         var parent = globParent(ourGlob);
 
@@ -42,22 +48,45 @@ module.exports = function (options) {
         return basePath;
     }
 
+    function getTagHtml (url, match, root_url, forcePrefix, file) {
+        var retval = '';
+        var basePath = getBasePath('');
+        // 获取差量目录 file.path - base.path
+        var relative_prefix = '/' + (
+                getBasePath(getBasePath(file.path) + url).replace(basePath, '')
+            );
+
+        if (url.match(reRoot)) {
+            // 绝对根目录:"/xxx.css or /xxx/xx.js"
+            retval = match.replace(url, root_url + forcePrefix + url);
+        } else if (url.match(reProtocol) || url.match(reDependProtocol)) {
+            // 协议路径不替换, http:// https:// file://
+            // 协议依赖的路径不替换 //www.eajax.cn/cnd/js/index.js
+            retval = match;
+        } else {
+            // 替换相对路径 ./ ../ ../../
+            retval = match.replace(url, root_url + forcePrefix + relative_prefix + url.replace(reFileName, '$2'));
+        }
+        return retval;
+    }
+
     var replaceHtml = function (chunk, enc, callback) {
-        if (chunk.isNull()) return callback(null, chunk);
-        if (chunk.isStream()) return callback(new gutil.PluginError(module_name, 'Streaming is not supported'));
+        if (chunk.isNull()) {
+            return callback(null, chunk);
+        }
+        if (chunk.isStream()) {
+            return callback(new gutil.PluginError(module_name, 'Streaming is not supported'));
+        }
         var fileContent = chunk.contents.toString();
         options.debug && log(fileContent);
-        var basePath=getBasePath('');
-
 
         fileContent = fileContent.replace(reScript, function (match, url) {
-                var relative_prefix = '/'+(getBasePath(getBasePath(chunk.path)+url).replace(basePath,''));
-                return '<script src="' + options.root.js + options.forcePrefix+ relative_prefix + url.replace(/(.*\/)*([^.]+\.\w+)/gmi,'$2')+ '"></script>'
+                log('js url replacing:', url);
+                return getTagHtml(url, match, options.root.js, options.forcePrefix, chunk);
             })
             .replace(reCss, function (match, url) {
-                console.log('css path.dirname========:',url);
-                var relative_prefix = '/'+(getBasePath(getBasePath(chunk.path)+url).replace(basePath,''));
-                return '<link rel="stylesheet" href="' + options.root.css + options.forcePrefix+ relative_prefix + url.replace(/(.*\/)*([^.]+\.\w+)/gmi,'$2')+ '"/>'
+                log('css url replacing:', url);
+                return getTagHtml(url, match, options.root.css, options.forcePrefix, chunk);
             });
         chunk.contents = new Buffer(fileContent);
         this.push(chunk);
