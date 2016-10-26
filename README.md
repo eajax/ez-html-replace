@@ -5,7 +5,7 @@ ez-html-replace
 
 > replace js' `src` and css' `href` with their cdn url.
 
-> No need for other comments.
+> No need for any comments.
 
 ## Install
 ```
