@@ -52,6 +52,9 @@ module.exports = function (options) {
         var retval = '';
         var basePath = getBasePath('');
         // 获取差量目录 file.path - base.path
+        // /User/xxx/workspace/project1/dist/css/
+        // /User/xxx/workspace/project1/dist/
+        //                                   css/
         var relative_prefix = '/' + (
                 getBasePath(getBasePath(file.path) + url).replace(basePath, '')
             );

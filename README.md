@@ -31,6 +31,56 @@ gulp.task('cdn', function() {
 });
 ```
 
+### `demo.html -- before build`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>source template</title>
+    <link rel="stylesheet" href="/css/sytle1.css"/>
+    <link href="css/sytle1.css"/>
+    <link href="../style/sytle2.css"/>
+    <link href="../../sytle1.css"/>
+    <script main="index.js" src="../config.js"></script>
+    <script src="../../index.js"></script>
+    <script src="index.js"></script>
+    <script type="text/javascript" src="./main.js"></script>
+    <script type="text/javascript" src="//www.baidu.com/js/main.js"></script>
+    <script type="text/javascript" src="http://www.baidu.com/js/main.js"></script>
+    <script type="text/javascript" src="https://www.baidu.com/js/main.js"></script>
+</head>
+<body>
+
+</body>
+</html>
+```
+
+### `demo.html -- after build`
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>source template</title>
+    <link rel="stylesheet" href="//www.baidu.com/cnd/config/css/sytle1.css"/>
+    <link href="//www.baidu.com/cnd/config/example/css/sytle1.css"/>
+    <link href="//www.baidu.com/cnd/config/style/sytle2.css"/>
+    <link href="//www.baidu.com/cnd/config//usr/local/workspace/sytle1.css"/>
+    <script main="index.js" src="//www.baidu.com/cnd/config/config.js"></script>
+    <script src="//www.baidu.com/cnd/config//usr/local/workspace/index.js"></script>
+    <script src="//www.baidu.com/cnd/config/example/index.js"></script>
+    <script type="text/javascript" src="//www.baidu.com/cnd/config/example/main.js"></script>
+    <script type="text/javascript" src="//www.baidu.com/js/main.js"></script>
+    <script type="text/javascript" src="http://www.baidu.com/js/main.js"></script>
+    <script type="text/javascript" src="https://www.baidu.com/js/main.js"></script>
+</head>
+<body>
+
+</body>
+</html>
+```
+
 ### cdn(options)
 
 ### options
