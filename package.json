@@ -1,0 +1,21 @@
+{
+  "name": "ez-html-replace",
+  "version": "1.0.3",
+  "description": "Used to replace the script and link tags in HTML",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "extend": "^3.0.0",
+    "glob-parent": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-rimraf": "^0.2.0",
+    "gulp-util": "^3.0.7",
+    "through2": "^2.0.1",
+    "to-absolute-glob": "^0.1.1"
+  },
+  "author": "Young Lee",
+  "license": "ISC"
+}
