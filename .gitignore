@@ -1,0 +1,6 @@
+example/output/
+.DS_Store
+.idea/
+node_modules/
+npm-debug.log
+npm-debug.log.*
