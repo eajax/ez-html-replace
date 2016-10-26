@@ -1,10 +1,10 @@
 'use strict';
 var through = require('through2');
-var log = require('gulp-util').log;
+var gutil = require('gulp-util');
 var path = require('path');
-var fs = require('fs');
 var globParent = require('glob-parent');
 var resolveGlob = require('to-absolute-glob');
+var log = gutil.log;
 
 //匹配正则
 var reScript = /<\s*script\s+[^\>\<]*src\s*=\s*["|']([^"'>]+)[^>]*><\s*\/\s*script\s*>/gmi;
@@ -43,7 +43,7 @@ module.exports = function (options) {
     }
 
     var replaceHtml = function (chunk, enc, callback) {
-        if (chunk.isNull()) return callback(null, file);
+        if (chunk.isNull()) return callback(null, chunk);
         if (chunk.isStream()) return callback(new gutil.PluginError(module_name, 'Streaming is not supported'));
         var fileContent = chunk.contents.toString();
         options.debug && log(fileContent);
