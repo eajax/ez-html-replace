@@ -84,11 +84,11 @@ module.exports = function (options) {
         options.debug && log(fileContent);
 
         fileContent = fileContent.replace(reScript, function (match, url) {
-                log('js url replacing:', url);
+                options.debug && log('js url replacing:', url);
                 return getTagHtml(url, match, options.root.js, options.forcePrefix, chunk);
             })
             .replace(reCss, function (match, url) {
-                log('css url replacing:', url);
+                options.debug && log('css url replacing:', url);
                 return getTagHtml(url, match, options.root.css, options.forcePrefix, chunk);
             });
         chunk.contents = new Buffer(fileContent);
