@@ -10,7 +10,7 @@ var log = gutil.log;
 var reScript = /<\s*script\s+[^\>\<]*src\s*=\s*["|']([^"'>]+)[^>]*><\s*\/\s*script\s*>/gmi;
 var reCss = /<link(?:.*?)href=[\"\'](.+?)[\"\'][^>]*(\/)*\>(?:<\/link>)*/gmi;
 var reRoot = /^\s*\/[^\/]/gm;
-var reProtocol = /^\s*(http(s*)|file)\:\/\//gm;
+var reProtocol = /^\s*(http(s*)|file)\:\/\//gmi;
 var reFileName = /(.*\/)*([^.]+\.\w+)/gmi;
 var reDependProtocol = /^\s*\/{2}/gm;
 var reNotReplace = /__NOT_REPLACE/;
@@ -18,7 +18,7 @@ var sepRe = (
     process.platform === 'win32' ? /[\/\\]/ : /\/+/
 );
 var cdnUrl = 'http://www.eajax.cn/staict/';
-var module_name = 'ez-html-url-replace';
+var module_name = 'ez-html-replace';
 
 module.exports = function (options) {
     //init default options
@@ -61,7 +61,8 @@ module.exports = function (options) {
             );
 
         if (reNotReplace.test(match)) {
-            retval = match;
+            // 包含__NOT_REPLACE 属性跳过替换,并清空该属性
+            retval = match.replace(reNotReplace,'');
         }else if (url.match(reRoot)) {
             // 绝对根目录:"/xxx.css or /xxx/xx.js"
             retval = match.replace(url, root_url + forcePrefix + url);
