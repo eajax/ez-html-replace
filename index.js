@@ -13,6 +13,7 @@ var reRoot = /^\s*\/[^\/]/gm;
 var reProtocol = /^\s*(http(s*)|file)\:\/\//gm;
 var reFileName = /(.*\/)*([^.]+\.\w+)/gmi;
 var reDependProtocol = /^\s*\/{2}/gm;
+var reNotReplace = /__NOT_REPLACE/;
 var sepRe = (
     process.platform === 'win32' ? /[\/\\]/ : /\/+/
 );
@@ -59,7 +60,9 @@ module.exports = function (options) {
                 getBasePath(getBasePath(file.path) + url).replace(basePath, '')
             );
 
-        if (url.match(reRoot)) {
+        if (reNotReplace.test(match)) {
+            retval = match;
+        }else if (url.match(reRoot)) {
             // 绝对根目录:"/xxx.css or /xxx/xx.js"
             retval = match.replace(url, root_url + forcePrefix + url);
         } else if (url.match(reProtocol) || url.match(reDependProtocol)) {
