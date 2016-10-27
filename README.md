@@ -7,6 +7,8 @@ ez-html-replace
 
 > No need for any comments.
 
+> You can skip the replacement, when the tag has a `__NOT_REPLACE` attribute
+
 ## Install
 ```
 npm install ez-html-replace --save-dev
