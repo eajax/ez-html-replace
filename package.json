@@ -1,6 +1,6 @@
 {
   "name": "ez-html-replace",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "Use to replace the script and link tags in HTML",
   "main": "index.js",
   "scripts": {
