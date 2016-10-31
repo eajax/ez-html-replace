@@ -24,8 +24,8 @@ module.exports = function (options) {
     //init default options
     options = options || {};
     options.root = options.root || {};
-    options.root.js = options.root.js || cdnUrl;
-    options.root.css = options.root.css || cdnUrl;
+    options.root.js = options.root.js || '';
+    options.root.css = options.root.css || '';
     options.debug = options.debug || false;
     options.dir = options.dir || './dist/';
     options.forcePrefix = options.forcePrefix || '';
@@ -62,8 +62,8 @@ module.exports = function (options) {
 
         if (reNotReplace.test(match)) {
             // 包含__NOT_REPLACE 属性跳过替换,并清空该属性
-            retval = match.replace(reNotReplace,'');
-        }else if (url.match(reRoot)) {
+            retval = match.replace(reNotReplace, '');
+        } else if (url.match(reRoot)) {
             // 绝对根目录:"/xxx.css or /xxx/xx.js"
             retval = match.replace(url, root_url + forcePrefix + url);
         } else if (url.match(reProtocol) || url.match(reDependProtocol)) {
@@ -72,7 +72,8 @@ module.exports = function (options) {
             retval = match;
         } else {
             // 替换相对路径 ./ ../ ../../
-            retval = match.replace(url, root_url + forcePrefix + relative_prefix + url.replace(reFileName, '$2'));
+            retval = match.replace(url,
+                root_url + forcePrefix + relative_prefix + url.replace(reFileName, '$2'));
         }
         return retval;
     }
@@ -84,6 +85,19 @@ module.exports = function (options) {
         if (chunk.isStream()) {
             return callback(new gutil.PluginError(module_name, 'Streaming is not supported'));
         }
+
+        if (options.root.js
+            === null
+            || options.root.js
+               === ''
+            || options.root.css
+               === null
+            || options.root.css
+               === '') {
+            return callback(new gutil.PluginError(module_name, 'options.root.js and options.root.css url required!')
+            );
+        }
+
         var fileContent = chunk.contents.toString();
         options.debug && log(fileContent);
 

@@ -99,12 +99,14 @@ Fixed context directory prefix.example : http://www.eajax.cn/cdn/{forePrefix}/cs
 Type: `Object`
 
 #### options.root.js
-Type: `String`
+Type: `String` 
+required: true
 
 The CDN prefix for js files.
 
 #### options.root.css
 Type: `String`
+required: true
 
 The CDN prefix for css files.
 
